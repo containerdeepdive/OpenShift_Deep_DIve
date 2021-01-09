@@ -1,0 +1,54 @@
+#A 3 tier application
+#
+#   FRONTEND ----> BACKEND ----> DATABASE ( MYSQL )   // REQUEST
+#   FRONTEND <---- BACKEND <---- DATABASE ( MYSQL )   // RESPONSE
+#   
+#1. Frontend --> does not require any storage. source code github repo
+#2. Backend --> publishing an API which will talk to the database
+#3. Database --> MYSQL ( NEEDS PERSISTENCE ) 
+#
+#every microservice will run into a container. Containers are ephmeral. They die, the data is lost.
+#
+#Every container gets a temporary volume called EmptyDir. EmptyDir data is not saved after the container is deleted OR it gets deleted automatically.
+#
+#Example of a pod using EmptyDir.
+#
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - image: k8s.gcr.io/test-webserver
+    name: test-container
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+#
+#
+#Different volume provisioners / plugins
+#https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
+#
+#How do you use the volumes
+#
+#PV and PVC 
+#
+#Lets assume that your cluster is running on AWS. 
+#
+#You run the database in the cluster --> You need 20 GB of storage.
+#
+#AS a developer --> you would ask / request for storage. Resource is called a PVC ( PersistentVolumeClaim ) 
+#
+#The actual harddisk / piece of data that has been created for you ( because we are on AWS, EBS ) --> this RESOURCE will be created and that would be called a PERSISTENTVOLUME ( PV )
+#
+#When I request for storage, it was dynamically provisioned ( because of a storage class ).
+#
+#MY PVC is now bound to a PV.
+#
+#And then, I can mount it inside my app. 
+#
+#Because I am using it for mysql, /var/lib/mysql --> I can mount the vol inside of this path.

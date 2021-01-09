@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+
+#1. I will give this information to the API server. 
+#cli
+#REST api
+#web console
+#
+#ALl of them are talking to the master API. 
+#
+#2. Master API will write that to the etcd.
+#
+#I gave the pod definition in yaml format to the master API and the master API ( runs on the master ) --> write that to the etcd cluster in json format.
+#
+#3. After being written to the etcd, controllers will come into the picture.
+#
+#``I want 1 pod of name myservice which will have 1 container with the name of web, from the image nginx:latest and a port of name web and port no 80``
+#
+#Desired state 
+#
+#phone --> turned off the screen. Locked the screen. feature that IF AND WHEN SOMEONE WILL LIFT THAT PHONE, IT WILL AUTOMATICALLY SHOW THE LOCK SCREEN.
+#
+#A controller is a forever running loop, that only triggers or reacts to some changes in a resource / or on an event.
+#
+#controller-manager
+#
+#4. The controller will see this write to the etcd, and see if I already have a pod with those specs. If not, it will create one.
+#
+#now the pod is created on node1.  
+#
+#wanted 1 == have 1
+#
+#started on node1 ---> node1 goes down for maintainance / crashes.
+#
+#wanted 1 == have 0
+#
+#drive desired == current and will create 1 container of the same specs.
